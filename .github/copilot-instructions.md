@@ -15,3 +15,4 @@ Execution Guidelines
 - Only install VS Code extensions specified by get_project_setup_info.
 - Prefer purposeful UI/UX decisions, avoid placeholder media, and implement only requested features.
 - Completion criteria: project scaffolding + compile success, up-to-date README, maintained Copilot instructions/agents, and clear user directions for launching or debugging.
+- Adding new features should be done using a feature branch, next test for the feature added, then code that makes the test pass, then a pull request with a clear description of the feature and its purpose by the reviewer agent.
