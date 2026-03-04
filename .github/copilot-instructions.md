@@ -56,3 +56,20 @@ Execution Guidelines
 
 - You may be asked to explain certain features once they are implemented. These explanations will go into the wiki to document the system. Also the dev-team members are not frontend experts or are rust or just unfamiliar with this technology stack. 
 - However it is best practice to understand the implementation details to quickly get up to speed on the project and be able to make informed decisions about future features and changes.
+
+## Skills Index (Discoverability)
+
+Use local reusable skills from `.github/skills/`:
+
+- Testing strategy and workflows: `.github/skills/testing/SKILL.md`
+- Mermaid diagram generation: `.github/skills/uml-mermaid/SKILL.md`
+- PlantUML ASCII diagram generation: `.github/skills/uml-planet/SKILL.md`
+
+## Prompt Index (Discoverability)
+
+Useful reusable prompts from `.github/prompts/`:
+
+- Test plan generation: `.github/prompts/gen-testing-plan.prompt.md`
+- Test scaffolding: `.github/prompts/gen-tests.prompt.md`
+- Docs comments generation: `.github/prompts/gen-docs-comments.prompt.md`
+- Lint-focused fixes: `.github/prompts/lint.prompt.md`

@@ -47,3 +47,23 @@ A Lit + Vite single-page experience designed for quick task capture and completi
 
 Workspace-specific Copilot instructions live in `.github/copilot-instructions.md`, and custom agent definitions live under `.github/agents/` (see `Reviewer.agent.md`). Adjust those files to guide Copilot responses for this project.
 Local reusable skills live under `.github/skills/` including `.github/skills/testing/SKILL.md` for unit, Playwright, mock-contract, and coverage workflows.
+
+## Using Skills and Prompts
+
+For faster onboarding and consistent output, start with these reusable assets:
+
+- Skills:
+  - `.github/skills/testing/SKILL.md`
+  - `.github/skills/uml-mermaid/SKILL.md`
+  - `.github/skills/uml-planet/SKILL.md`
+- Prompts:
+  - `.github/prompts/gen-testing-plan.prompt.md`
+  - `.github/prompts/gen-tests.prompt.md`
+  - `.github/prompts/gen-docs-comments.prompt.md`
+  - `.github/prompts/lint.prompt.md`
+
+Usage pattern:
+
+1. Pick a skill for domain guidance (testing/diagrams).
+2. Use a prompt for task-specific output shape (plan, tests, docs, linting).
+3. Cross-check with `.github/copilot-instructions.md` for repo rules and completion criteria.
