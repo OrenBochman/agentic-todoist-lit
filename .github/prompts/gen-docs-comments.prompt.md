@@ -30,3 +30,26 @@ ${selection}
 ### Output
 
 Return the finalized comments, as a patch in their corresponding blocks, ready to be applied or discarded.
+
+### Examples
+
+```jsdoc
+/**
+ * This is my element
+ * @attr size
+ * @attr {red|blue} color - The color of my element
+ * @prop {String} value
+ * @prop {Boolean} myProp - This is my property
+ * @fires change
+ * @fires my-event - This is my own event
+ * @slot - This is a comment for the unnamed slot
+ * @slot right - Right content
+ * @slot left
+ * @cssprop {Color} --border-color
+ * @csspart header
+ */
+class MyElement extends HTMLElement { 
+}
+
+customElements.define("my-element", MyElement);
+```
