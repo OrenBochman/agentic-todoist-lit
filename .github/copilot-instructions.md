@@ -6,9 +6,27 @@
 - [x] Compile the Project.
 - [ ] Create and Run Task when needed for this workspace.
 - [ ] Launch the Project (prompt for debug mode first).
-- [ ] Ensure Documentation is Complete (README plus this file reference).
+- [ ] Ensure Documentation is Complete (README plus this file reference). Use the gen-docs-comments.prompt.md prompt if necessary.
+
+- [ ] Add these features:
+  - [ ] darkmode/lightmode toggle
+  - [ ] export and import the todos to a file, so that the user can save and load their progress across sessions.
+  - [ ] parser and ui for 
+    - [ ] `+` for projects
+    - [ ] `@` for contexts
+    - [ ] `#` for tags and `#kb-` prefix for kanban columns
+    - [ ] `{}` for due dates
+    - [ ] (color code task date based on how soon it is, e.g. red for overdue, yellow for due within a week, green for due later)
+  - Filtering by project, context, tag, or due date
+  - Sorting by due date, project, context, or tag
+  - Kanban view
+  - Gantt view
+  - Calendar view
 
 Execution Guidelines
+- We are now in a monorepo workspace. The root contains the wiki and the lit directory contains the todo app project. When executing tasks, ensure you are operating in the correct directory and context for the task at hand.
+  - For project-specific tasks, navigate to the `lit` directory before executing commands or making changes.
+  - For wiki-related tasks, operate in the root directory.
 - Track progress using the available todo list tool and update after each step.
 - Keep communication concise, avoid dumping command output, and mention skipped steps explicitly.
 - Work from the project root, avoid unnecessary folders, and do not revert user changes.
