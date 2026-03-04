@@ -37,6 +37,7 @@
   - Calendar view
 
 Execution Guidelines
+- Since we use lit lets use the philosophy of "everything is a web component". This means that we should strive to create reusable web components for each feature or UI element in the app. This will help us maintain a consistent design and make it easier to manage our codebase.
 - We are now in a monorepo workspace. The root contains the wiki and the lit directory contains the todo app project. When executing tasks, ensure you are operating in the correct directory and context for the task at hand.
   - For project-specific tasks, navigate to the `lit` directory before executing commands or making changes.
   - For wiki-related tasks, operate in the root directory.
@@ -47,6 +48,7 @@ Execution Guidelines
 - Prefer purposeful UI/UX decisions, avoid placeholder media, and implement only requested features.
 - Completion criteria: project scaffolding + compile success, up-to-date README, maintained Copilot instructions/agents, and clear user directions for launching or debugging.
 - Adding new features should be done using a feature branch, next test for the feature added, then code that makes the test pass, then a pull request with a clear description of the feature and its purpose by the reviewer agent.
+- List all web components in the Readme with a brief description of their purpose and usage.
 
 
 ## Request for details

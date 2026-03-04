@@ -1,8 +1,17 @@
 import { LitElement, css, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import './components/theme-switcher.ts'
-import { themeStore, type ThemeMode } from './theme-store'
+import { themeStore, type ThemeFamily, type ThemeMode } from './theme-store'
 
+/**
+ * Primary planner composition module.
+ *
+ * This file hosts the top-level task UX so persistence, filtering, and theme projection remain
+ * coordinated in one reactive surface. It depends on `localStorage` for task durability,
+ * `themeStore` for system-aware palette state, and global design tokens consumed by component
+ * styles. The module keeps task mutations local and deterministic: writes happen only when the
+ * `tasks` array changes, and rendered views derive from state rather than duplicated caches.
+ */
 type TaskFilter = 'all' | 'active' | 'completed'
 
 interface TaskItem {
@@ -13,6 +22,32 @@ interface TaskItem {
 }
 
 @customElement('task-planner')
+/**
+ * Root task-planner web component.
+ *
+ * Why this exists:
+ * - Centralizes task lifecycle (create, toggle, delete, clear, filter) in one Lit component.
+ * - Bridges global theme state into header controls without storing theme preferences locally.
+ *
+ * Contracts:
+ * - Input: optional `tasks` property, expected to match `TaskItem` shape.
+ * - Side effects: reads and writes `localStorage` under `task-planner-tasks`.
+ * - Output: renders an interactive task board and emits no custom events.
+ *
+ * Data flow invariants:
+ * - `tasks` is the source of truth; filtered and metric views are computed from it on demand.
+ * - Stored tasks are sorted newest-first at hydration time to keep recency expectations stable.
+ * - Theme mode and family are subscribed from `themeStore` and passed to `theme-switcher`.
+ *
+ * UX and accessibility notes:
+ * - Input supports Enter to add and Escape to clear draft text.
+ * - Filter chips use pressed state semantics; list updates are announced via `aria-live`.
+ * - Focus rings and contrast rely on shared CSS custom properties from global theme tokens.
+ *
+ * Edge cases:
+ * - Corrupt stored JSON is ignored with a warning to avoid blocking app startup.
+ * - IDs use `crypto.randomUUID` with a timestamp fallback for older runtime compatibility.
+ */
 export class TaskPlanner extends LitElement {
   private static readonly STORAGE_KEY = 'task-planner-tasks'
 
@@ -28,12 +63,16 @@ export class TaskPlanner extends LitElement {
   @state()
   private theme: ThemeMode = 'light'
 
+  @state()
+  private themeFamily: ThemeFamily = 'coffe'
+
   private unsubscribeTheme?: () => void
 
   connectedCallback(): void {
     super.connectedCallback()
-    this.unsubscribeTheme = themeStore.subscribe((theme) => {
-      this.theme = theme
+    this.unsubscribeTheme = themeStore.subscribe((themeState) => {
+      this.theme = themeState.mode
+      this.themeFamily = themeState.family
     })
 
     const stored = localStorage.getItem(TaskPlanner.STORAGE_KEY)
@@ -68,7 +107,7 @@ export class TaskPlanner extends LitElement {
         <header class="planner-hero">
           <div class="hero-topbar">
             <p class="eyebrow">Agentic Todoist</p>
-            <theme-switcher .theme=${this.theme}></theme-switcher>
+            <theme-switcher .theme=${this.theme} .family=${this.themeFamily}></theme-switcher>
           </div>
           <h1>Design your day with intent.</h1>
           <p class="subtitle">
