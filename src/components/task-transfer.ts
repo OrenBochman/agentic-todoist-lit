@@ -8,7 +8,45 @@ import {
     type TransferTask,
 } from './task-transfer-utils'
 
+/**
+ * Transfer control module for todo import/export.
+ *
+ * This file isolates file-transfer UX from planner state orchestration so serialization and file
+ * handling logic remain reusable. It depends on `task-transfer-utils` for deterministic payload
+ * creation and normalization, browser File APIs for user-selected input, and global design tokens
+ * for consistent button styling.
+ *
+ * Contracts and side effects:
+ * - Input: `tasks` array from parent state.
+ * - Output: emits `import-tasks` with normalized tasks.
+ * - Side effects: opens file dialog, creates object URLs, triggers a download, and logs parse
+ *   failures.
+ */
 @customElement('task-transfer')
+/**
+ * Web component that provides Import and Export actions for todo data.
+ *
+ * Why this exists:
+ * - Keeps transfer concerns in a focused component aligned with the web-component architecture.
+ * - Ensures planner components consume validated task data through a single event contract.
+ *
+ * Contracts:
+ * - `tasks` is the current list to serialize during export.
+ * - Dispatches `import-tasks` (`CustomEvent<{ tasks: TransferTask[] }>`), bubbling and composed.
+ *
+ * Data flow:
+ * - Export path: `tasks` -> `buildExportPayload` -> Blob -> temporary download link.
+ * - Import path: file input -> text read -> JSON parse -> `extractImportedTasks` -> event emit.
+ *
+ * Edge cases:
+ * - Empty selection exits early without side effects.
+ * - Input value is reset so selecting the same file again still triggers change.
+ * - Invalid JSON is handled with warning logs, preserving current planner state.
+ *
+ * Dependencies:
+ * - Browser APIs: `Blob`, `URL.createObjectURL`, `File.text`, and click-triggered downloads.
+ * - Theme tokens: `--ghost-color` and `--focus-ring` for accessible focus and contrast behavior.
+ */
 export class TaskTransfer extends LitElement {
     @property({ type: Array })
     tasks: TransferTask[] = []

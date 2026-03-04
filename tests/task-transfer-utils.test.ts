@@ -1,4 +1,3 @@
-/// <reference path="./vitest-shim.d.ts" />
 import { describe, expect, it } from 'vitest'
 import {
     buildExportFilename,
