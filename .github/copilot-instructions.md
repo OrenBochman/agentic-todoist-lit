@@ -47,3 +47,9 @@ Execution Guidelines
 - Prefer purposeful UI/UX decisions, avoid placeholder media, and implement only requested features.
 - Completion criteria: project scaffolding + compile success, up-to-date README, maintained Copilot instructions/agents, and clear user directions for launching or debugging.
 - Adding new features should be done using a feature branch, next test for the feature added, then code that makes the test pass, then a pull request with a clear description of the feature and its purpose by the reviewer agent.
+
+
+## Request for details
+
+- You may be asked to explain certain features once they are implemented. These explanations will go into the wiki to document the system. Also the dev-team members are not frontend experts or are rust or just unfamiliar with this technology stack. 
+- However it is best practice to understand the implementation details to quickly get up to speed on the project and be able to make informed decisions about future features and changes.
