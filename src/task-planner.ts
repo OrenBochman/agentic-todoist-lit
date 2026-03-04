@@ -1,6 +1,7 @@
 import { LitElement, css, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import './components/theme-switcher.ts'
+import './components/task-transfer.ts'
 import { themeStore, type ThemeFamily, type ThemeMode } from './theme-store'
 
 /**
@@ -157,9 +158,15 @@ export class TaskPlanner extends LitElement {
         </ul>
 
         <footer class="panel actions">
-          <button class="ghost" ?disabled=${completed === 0} @click=${this._clearCompleted}>
-            Clear completed
-          </button>
+          <div class="action-buttons">
+            <button class="ghost" ?disabled=${completed === 0} @click=${this._clearCompleted}>
+              Clear completed
+            </button>
+            <task-transfer
+              .tasks=${this.tasks}
+              @import-tasks=${this._handleImportedTasks}
+            ></task-transfer>
+          </div>
           <span>${active} task${active === 1 ? '' : 's'} remaining</span>
         </footer>
       </section>
@@ -231,6 +238,10 @@ export class TaskPlanner extends LitElement {
 
   private _clearCompleted() {
     this.tasks = this.tasks.filter((task) => !task.completed)
+  }
+
+  private _handleImportedTasks(event: CustomEvent<{ tasks: TaskItem[] }>) {
+    this.tasks = event.detail.tasks
   }
 
   private _renderTask(task: TaskItem) {
@@ -519,6 +530,13 @@ export class TaskPlanner extends LitElement {
       justify-content: space-between;
       align-items: center;
       gap: 1rem;
+    }
+
+    .action-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     @media (max-width: 520px) {
