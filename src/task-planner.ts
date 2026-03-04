@@ -1,5 +1,7 @@
 import { LitElement, css, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
+import './components/theme-switcher.ts'
+import { themeStore, type ThemeMode } from './theme-store'
 
 type TaskFilter = 'all' | 'active' | 'completed'
 
@@ -23,8 +25,17 @@ export class TaskPlanner extends LitElement {
   @state()
   private newTask = ''
 
+  @state()
+  private theme: ThemeMode = 'light'
+
+  private unsubscribeTheme?: () => void
+
   connectedCallback(): void {
     super.connectedCallback()
+    this.unsubscribeTheme = themeStore.subscribe((theme) => {
+      this.theme = theme
+    })
+
     const stored = localStorage.getItem(TaskPlanner.STORAGE_KEY)
     if (stored) {
       try {
@@ -34,6 +45,12 @@ export class TaskPlanner extends LitElement {
         console.warn('Unable to parse stored tasks', error)
       }
     }
+  }
+
+  disconnectedCallback(): void {
+    this.unsubscribeTheme?.()
+    this.unsubscribeTheme = undefined
+    super.disconnectedCallback()
   }
 
   protected updated(changed: Map<string | number | symbol, unknown>): void {
@@ -49,7 +66,10 @@ export class TaskPlanner extends LitElement {
     return html`
       <section class="planner-shell">
         <header class="planner-hero">
-          <p class="eyebrow">Agentic Todoist</p>
+          <div class="hero-topbar">
+            <p class="eyebrow">Agentic Todoist</p>
+            <theme-switcher .theme=${this.theme}></theme-switcher>
+          </div>
           <h1>Design your day with intent.</h1>
           <p class="subtitle">
             Capture tasks, track focus, and keep momentum with a fast, tactile board.
@@ -225,8 +245,8 @@ export class TaskPlanner extends LitElement {
       display: block;
       min-height: 100vh;
       padding: 3rem clamp(1rem, 5vw, 5rem);
-      background: radial-gradient(circle at 25% 25%, #101828, #03050d 65%);
-      color: #f3f6ff;
+      background: var(--planner-host-bg);
+      color: var(--color-text-primary);
       font-family: 'Space Grotesk', 'IBM Plex Sans', system-ui, sans-serif;
     }
 
@@ -243,12 +263,21 @@ export class TaskPlanner extends LitElement {
       animation: slideDown 600ms ease;
     }
 
+    .hero-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+      flex-wrap: wrap;
+    }
+
     .eyebrow {
       text-transform: uppercase;
       letter-spacing: 0.2em;
       font-size: 0.75rem;
-      color: #9ea8ff;
-      margin-bottom: 0.5rem;
+      color: var(--color-text-accent);
+      margin: 0;
     }
 
     h1 {
@@ -259,7 +288,7 @@ export class TaskPlanner extends LitElement {
 
     .subtitle {
       margin: 0.75rem 0 1.75rem;
-      color: #c6cee8;
+      color: var(--color-text-secondary);
       max-width: 40ch;
     }
 
@@ -270,11 +299,11 @@ export class TaskPlanner extends LitElement {
     }
 
     .hero-metrics article {
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--metric-border);
       border-radius: 1rem;
       padding: 1rem 1.25rem;
       backdrop-filter: blur(10px);
-      background: rgba(17, 24, 39, 0.65);
+      background: var(--metric-bg);
     }
 
     .hero-metrics span {
@@ -284,16 +313,16 @@ export class TaskPlanner extends LitElement {
     }
 
     .hero-metrics label {
-      color: #95a0d3;
+      color: var(--color-text-tertiary);
       font-size: 0.85rem;
     }
 
     .panel {
       border-radius: 1.25rem;
       padding: 1.5rem;
-      background: rgba(15, 23, 42, 0.75);
-      border: 1px solid rgba(120, 132, 255, 0.35);
-      box-shadow: 0 20px 60px rgba(3, 5, 13, 0.4);
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      box-shadow: var(--panel-shadow);
     }
 
     .composer {
@@ -313,7 +342,7 @@ export class TaskPlanner extends LitElement {
       border-radius: 999px;
       border: 1px solid transparent;
       padding: 0.75rem 1.25rem;
-      background: rgba(255, 255, 255, 0.08);
+      background: var(--input-bg);
       color: inherit;
       font-size: 1rem;
       transition: border 150ms ease, transform 150ms ease;
@@ -321,9 +350,15 @@ export class TaskPlanner extends LitElement {
 
     input[type='text']:focus {
       outline: none;
-      border-color: #9ea8ff;
+      border-color: var(--input-focus-border);
       transform: translateY(-2px);
-      background: rgba(255, 255, 255, 0.12);
+      background: var(--input-bg-focus);
+    }
+
+    input[type='text']:focus-visible,
+    button:focus-visible {
+      outline: 2px solid var(--focus-ring);
+      outline-offset: 2px;
     }
 
     button {
@@ -343,9 +378,9 @@ export class TaskPlanner extends LitElement {
     }
 
     .primary {
-      background: linear-gradient(135deg, #a855f7, #6366f1);
-      color: white;
-      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.45);
+      background: var(--primary-gradient);
+      color: var(--button-text-on-primary);
+      box-shadow: var(--primary-shadow);
     }
 
     .primary:hover {
@@ -354,7 +389,7 @@ export class TaskPlanner extends LitElement {
 
     .ghost {
       background: transparent;
-      color: #b6bef5;
+      color: var(--ghost-color);
     }
 
     .filters {
@@ -366,18 +401,18 @@ export class TaskPlanner extends LitElement {
 
     .chip {
       border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid var(--chip-border);
       padding: 0.35rem 1rem;
-      background: rgba(255, 255, 255, 0.06);
-      color: #cfd7ff;
+      background: var(--chip-bg);
+      color: var(--chip-color);
       font-size: 0.9rem;
     }
 
     .chip.active {
-      border-color: #c084fc;
-      background: rgba(192, 132, 252, 0.2);
-      color: white;
-      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+      border-color: var(--chip-active-border);
+      background: var(--chip-active-bg);
+      color: var(--chip-active-color);
+      box-shadow: inset 0 0 0 1px var(--chip-active-inner);
     }
 
     .task-list {
@@ -396,8 +431,8 @@ export class TaskPlanner extends LitElement {
       gap: 0.5rem;
       padding: 1rem 1.25rem;
       border-radius: 1rem;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: var(--task-bg);
+      border: 1px solid var(--task-border);
       animation: fadeIn 220ms ease;
     }
 
@@ -415,29 +450,29 @@ export class TaskPlanner extends LitElement {
     }
 
     .task small {
-      color: #9da9d8;
+      color: var(--muted-text);
       font-size: 0.8rem;
     }
 
     .toggle {
       width: 1.1rem;
       height: 1.1rem;
-      accent-color: #c084fc;
+      accent-color: var(--toggle-accent);
       cursor: pointer;
     }
 
     .task[data-complete='true'] strong {
       text-decoration: line-through;
-      color: #7983ad;
+      color: var(--task-complete-text);
     }
 
     .empty-state {
       text-align: center;
       padding: 2rem;
       border-radius: 1rem;
-      border: 1px dashed rgba(255, 255, 255, 0.2);
-      color: #9ba6da;
-      background: rgba(255, 255, 255, 0.03);
+      border: 1px dashed var(--empty-border);
+      color: var(--muted-text);
+      background: var(--empty-bg);
     }
 
     .actions {

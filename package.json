@@ -4,10 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 127.0.0.1 --port 4173",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "lint": "eslint . --ext .ts",
+    "check:no-js-in-src": "if find src -type f -name '*.js' | grep -q .; then echo 'Error: JavaScript files found in src/. This project is TypeScript-only.' && find src -type f -name '*.js'; exit 1; else echo 'OK: no JavaScript files found in src/'; fi",
+    "lint": "npm run check:no-js-in-src && eslint . --ext .ts",
     "format": "prettier . --check"
   },
   "dependencies": {

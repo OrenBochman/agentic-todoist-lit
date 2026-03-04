@@ -9,7 +9,19 @@
 - [ ] Ensure Documentation is Complete (README plus this file reference). Use the gen-docs-comments.prompt.md prompt if necessary.
 
 - [ ] Add these features:
-  - [ ] darkmode/lightmode toggle
+  - [ ] darkmode/lightmode toggler as  web component:
+    - Theme behavior requirements (source of truth for implementation):
+      - Default theme is `Light`.
+      - Theme must always follow system preference via `prefers-color-scheme`.
+      - Do not persist user theme preference in `localStorage` or any other storage.
+      - Provide a visible global toggle in the top app toolbar/header.
+      - If system theme changes while the app is open, UI should reflect the new system theme.
+      - Toggle interactions must remain keyboard accessible and keep visible focus indicators in both themes.
+      - Use centralized theme tokens/CSS custom properties for colors; avoid scattered hard-coded color values.
+    - Acceptance criteria:
+      - On first load, app starts from `Light` and then reflects system theme behavior.
+      - With no persistence, reload uses current system preference behavior (no remembered user override).
+      - Header toggle is present, operable with keyboard, and updates the rendered theme state.
   - [ ] export and import the todos to a file, so that the user can save and load their progress across sessions.
   - [ ] parser and ui for 
     - [ ] `+` for projects

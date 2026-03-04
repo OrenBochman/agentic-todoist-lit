@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     /* Language and Environment */
-     "plugins": [
-            {
+    "plugins": [
+      {
         "name": "ts-lit-plugin",
         "strict": true,
         "rules": {
@@ -10,7 +10,7 @@
           "no-unknown-event": "warn"
         }
       }
-    ]},
+    ],
     "target": "ES2022",
     "experimentalDecorators": true,
     "useDefineForClassFields": false,
